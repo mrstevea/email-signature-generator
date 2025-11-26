@@ -7,7 +7,8 @@ A simple, web-based tool to generate professional email signatures for SpendRule
 ## ✨ Features
 
 - **Live Preview** – See your signature update as you type
-- **Hosting Guide** – Built-in instructions for hosting images (Imgur, Cloudinary, Google Drive)
+- **Permanent Logo** – SpendRule logo is embedded for consistency
+- **Hosting Guide** – Built-in instructions for hosting profile photos
 - **One-Click Copy** – Copy formatted signature directly to clipboard
 - **Download HTML** – Save signature as an HTML file
 - **Email Client Compatible** – Works with Gmail, Outlook, Apple Mail, and more
@@ -27,6 +28,18 @@ Visit the live generator: **https://mrstevea.github.io/email-signature-generator
 2. Open `index.html` in any web browser
 3. Fill in your details
 4. Click "Copy Signature" and paste into your email client
+
+### ⚠️ First-Time Setup (Important!)
+
+After cloning the repo, update the logo URL in `index.html`:
+
+1. Open `index.html` in a text editor
+2. Find this line near the top of the `<script>` section:
+   ```javascript
+   const SPENDRULE_LOGO = "https://raw.githubusercontent.com/YOUR_USERNAME/email-signature-generator/main/assets/spendrule_logo.png";
+   ```
+3. Replace `YOUR_USERNAME` with your GitHub username (e.g., `spendrule`)
+4. Push to GitHub and the logo will be hosted automatically!
 
 ## 📧 Installation Guide
 
@@ -69,7 +82,9 @@ Visit the live generator: **https://mrstevea.github.io/email-signature-generator
 
 ## 🖼️ Image Hosting
 
-For the signature to display correctly, profile photos and logos must be hosted online. Recommended options:
+For the signature to display correctly, profile photos must be hosted online. The SpendRule logo is permanently embedded.
+
+Recommended hosting options:
 
 | Service | Free Tier | Notes |
 |---------|-----------|-------|
@@ -78,12 +93,13 @@ For the signature to display correctly, profile photos and logos must be hosted 
 | [AWS S3](https://aws.amazon.com/s3/) | 5GB | Professional, requires setup |
 | [Google Cloud Storage](https://cloud.google.com/storage) | 5GB | Good for Google Workspace |
 
-### Recommended Image Sizes
+### Recommended Image Size
 
 | Image | Display Size | Upload Size (@2x) |
 |-------|--------------|-------------------|
 | Profile Photo | 68×68 px | 136×136 px |
-| Company Logo | 64×13 px | 128×26 px |
+
+*Note: The SpendRule logo is permanently embedded and doesn't need to be uploaded.*
 
 ## 🎨 Customization
 
@@ -109,7 +125,7 @@ The signature follows these Figma specifications:
 - Name: 16px, -0.35px letter-spacing
 - Title: 12px, -0.26px letter-spacing  
 - Contact info: 12px, -0.22px letter-spacing, 4px vertical gap
-- Logo: 64×13px, aligned bottom-right
+- Logo: 67×14px, aligned bottom-right (permanently embedded)
 
 ## 🧪 Testing
 
@@ -125,10 +141,12 @@ Before rolling out to the team:
 
 ```
 email-signature-generator/
-├── index.html      # Main application (all-in-one)
-├── README.md       # This file
-├── LICENSE         # MIT License
-└── preview.png     # Screenshot for README
+├── index.html              # Main application (all-in-one)
+├── assets/
+│   └── spendrule_logo.png  # Company logo (hosted via GitHub raw)
+├── README.md               # This file
+├── LICENSE                 # MIT License
+└── preview.png             # Screenshot for README
 ```
 
 ## 🤝 Contributing
