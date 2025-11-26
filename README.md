@@ -7,6 +7,7 @@ A simple, web-based tool to generate professional email signatures for SpendRule
 ## ✨ Features
 
 - **Live Preview** – See your signature update as you type
+- **Hosting Guide** – Built-in instructions for hosting images (Imgur, Cloudinary, Google Drive)
 - **One-Click Copy** – Copy formatted signature directly to clipboard
 - **Download HTML** – Save signature as an HTML file
 - **Email Client Compatible** – Works with Gmail, Outlook, Apple Mail, and more
@@ -25,7 +26,7 @@ Visit the live generator: **https://mrstevea.github.io/email-signature-generator
 1. Download or clone this repository
 2. Open `index.html` in any web browser
 3. Fill in your details
-4. Click "Copy Signature" and paste it into your email client
+4. Click "Copy Signature" and paste into your email client
 
 ## 📧 Installation Guide
 
