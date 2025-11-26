@@ -18,14 +18,14 @@ A simple, web-based tool to generate professional email signatures for SpendRule
 
 ### Option 1: Use Online (Recommended)
 
-Visit the live generator: **[https://spendrule.github.io/email-signature-generator](https://spendrule.github.io/email-signature-generator)**
+Visit the live generator: **https://mrstevea.github.io/email-signature-generator/**
 
 ### Option 2: Run Locally
 
 1. Download or clone this repository
 2. Open `index.html` in any web browser
 3. Fill in your details
-4. Click "Copy Signature" and paste into your email client
+4. Click "Copy Signature" and paste it into your email client
 
 ## 📧 Installation Guide
 
