@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SpendRule Email Signature Generator</title>
+  <meta name="description" content="Generate professional email signatures for SpendRule team members">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✉️</text></svg>">
   <style>
     * {
       box-sizing: border-box;
@@ -23,11 +25,17 @@
       margin: 0 auto;
     }
     
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    
     h1 {
       font-size: 24px;
       font-weight: 600;
       color: #000;
-      margin-bottom: 8px;
     }
     
     .subtitle {
@@ -44,6 +52,11 @@
     @media (max-width: 768px) {
       .grid {
         grid-template-columns: 1fr;
+      }
+      
+      .preview-section {
+        position: relative !important;
+        top: 0 !important;
       }
     }
     
@@ -65,12 +78,20 @@
       margin-bottom: 16px;
     }
     
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+    
     label {
       display: block;
       font-size: 13px;
       font-weight: 500;
       color: #333;
       margin-bottom: 6px;
+    }
+    
+    label .required {
+      color: #FF4F00;
     }
     
     input[type="text"],
@@ -82,12 +103,17 @@
       border: 1px solid #ddd;
       border-radius: 8px;
       font-size: 14px;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
     
     input:focus {
       outline: none;
       border-color: #FF4F00;
+      box-shadow: 0 0 0 3px rgba(255, 79, 0, 0.1);
+    }
+    
+    input::placeholder {
+      color: #aaa;
     }
     
     .preview-section {
@@ -109,6 +135,7 @@
       border-radius: 8px;
       padding: 20px;
       margin-bottom: 20px;
+      min-height: 160px;
     }
     
     .button-group {
@@ -136,6 +163,10 @@
       background: #e54500;
     }
     
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+    
     .btn-secondary {
       background: #f0f0f0;
       color: #333;
@@ -145,28 +176,65 @@
       background: #e5e5e5;
     }
     
-    .success-message {
-      background: #d4edda;
-      color: #155724;
+    .message {
       padding: 12px 16px;
       border-radius: 8px;
       margin-top: 16px;
       font-size: 14px;
       display: none;
+      text-align: center;
     }
     
-    .success-message.show {
+    .message.show {
       display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .message.success {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .message.warning {
+      background: #fff3cd;
+      color: #856404;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
     .code-section {
       margin-top: 24px;
     }
     
-    .code-section h3 {
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .code-header h3 {
       font-size: 14px;
       font-weight: 600;
-      margin-bottom: 12px;
+    }
+    
+    .code-copy-btn {
+      font-size: 12px;
+      padding: 6px 12px;
+      background: #f0f0f0;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #666;
+      flex: none;
+    }
+    
+    .code-copy-btn:hover {
+      background: #e5e5e5;
+      color: #333;
     }
     
     .code-box {
@@ -178,17 +246,162 @@
     }
     
     .code-box code {
-      font-family: 'Monaco', 'Menlo', monospace;
+      font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
       font-size: 11px;
       color: #d4d4d4;
       white-space: pre-wrap;
       word-break: break-all;
+      line-height: 1.5;
     }
     
     .helper-text {
       font-size: 12px;
       color: #888;
       margin-top: 4px;
+    }
+    
+    .divider {
+      height: 1px;
+      background: #eee;
+      margin: 20px 0;
+    }
+    
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+    
+    /* Hosting Guide Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .modal-overlay.show {
+      display: flex;
+    }
+    
+    .modal {
+      background: #fff;
+      border-radius: 16px;
+      max-width: 560px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .modal-header h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #999;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+    
+    .modal-close:hover {
+      color: #333;
+    }
+    
+    .modal-body {
+      padding: 24px;
+    }
+    
+    .hosting-option {
+      border: 1px solid #eee;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      transition: border-color 0.2s;
+    }
+    
+    .hosting-option:hover {
+      border-color: #FF4F00;
+    }
+    
+    .hosting-option:last-child {
+      margin-bottom: 0;
+    }
+    
+    .hosting-option h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .hosting-option .badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    
+    .badge.recommended {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .badge.easy {
+      background: #cce5ff;
+      color: #004085;
+    }
+    
+    .hosting-option p {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 12px;
+    }
+    
+    .hosting-option ol {
+      font-size: 13px;
+      color: #444;
+      padding-left: 20px;
+      margin: 0;
+    }
+    
+    .hosting-option li {
+      margin-bottom: 6px;
+    }
+    
+    .hosting-option a {
+      color: #FF4F00;
+      text-decoration: none;
+    }
+    
+    .hosting-option a:hover {
+      text-decoration: underline;
     }
     
     /* Signature Preview Styles */
@@ -244,54 +457,68 @@
     .sig-logo {
       width: 64px;
       height: 13px;
+      object-fit: contain;
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid #eee;
+      color: #999;
+      font-size: 13px;
+    }
+    
+    .footer a {
+      color: #FF4F00;
+      text-decoration: none;
+    }
+    
+    .footer a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>SpendRule Email Signature Generator</h1>
-    <p class="subtitle">Fill in your details to generate your email signature</p>
+    <div class="header">
+      <h1>SpendRule Email Signature Generator</h1>
+    </div>
+    <p class="subtitle">Fill in your details to generate your professional email signature</p>
     
     <div class="grid">
       <!-- Form Section -->
       <div class="card">
         <h2>Your Details</h2>
         
+        <div class="section-title">Personal Information</div>
+        
         <div class="form-group">
-          <label for="fullName">Full Name *</label>
+          <label for="fullName">Full Name <span class="required">*</span></label>
           <input type="text" id="fullName" placeholder="Joseph Akintolayo" value="Joseph Akintolayo">
         </div>
         
         <div class="form-group">
-          <label for="jobTitle">Job Title *</label>
+          <label for="jobTitle">Job Title <span class="required">*</span></label>
           <input type="text" id="jobTitle" placeholder="CTO & Co-Founder" value="CTO & Co-Founder">
         </div>
         
+        <div class="divider"></div>
+        <div class="section-title">Contact Information</div>
+        
         <div class="form-group">
-          <label for="email">Email Address *</label>
+          <label for="email">Email Address <span class="required">*</span></label>
           <input type="email" id="email" placeholder="joseph@spendrule.com" value="joseph@spendrule.com">
         </div>
         
         <div class="form-group">
-          <label for="phone">Phone Number *</label>
+          <label for="phone">Phone Number <span class="required">*</span></label>
           <input type="tel" id="phone" placeholder="+1 (469) 998-2727" value="+1 (469) 998-2727">
           <p class="helper-text">Use international format: +1 (xxx) xxx-xxxx</p>
         </div>
         
         <div class="form-group">
-          <label for="photoUrl">Profile Photo URL</label>
-          <input type="url" id="photoUrl" placeholder="https://example.com/photo.jpg" value="">
-          <p class="helper-text">Leave blank to use placeholder. Recommended: 136x136px</p>
-        </div>
-        
-        <div class="form-group">
-          <label for="logoUrl">Company Logo URL</label>
-          <input type="url" id="logoUrl" placeholder="https://example.com/logo.png" value="">
-          <p class="helper-text">Leave blank to use placeholder. Recommended: 128x26px</p>
-        </div>
-        
-        <div class="form-group">
-          <label for="website">Website</label>
+          <label for="website">Website Display Text</label>
           <input type="text" id="website" placeholder="spendrule.com" value="spendrule.com">
         </div>
         
@@ -299,6 +526,25 @@
           <label for="websiteUrl">Website URL</label>
           <input type="url" id="websiteUrl" placeholder="https://spendrule.com" value="https://spendrule.com">
         </div>
+        
+        <div class="divider"></div>
+        <div class="section-title">Images</div>
+        
+        <div class="form-group">
+          <label for="photoUrl">Profile Photo URL</label>
+          <input type="url" id="photoUrl" placeholder="https://cdn.example.com/photos/your-photo.jpg">
+          <p class="helper-text">Recommended: 136×136px (displays at 68×68px)</p>
+        </div>
+        
+        <div class="form-group">
+          <label for="logoUrl">Company Logo URL</label>
+          <input type="url" id="logoUrl" placeholder="https://cdn.example.com/logo.png">
+          <p class="helper-text">Recommended: 128×26px (displays at 64×13px)</p>
+        </div>
+        
+        <button class="btn-secondary" onclick="showHostingGuide()" style="width: 100%; margin-top: 8px;">
+          📖 How to Host Images
+        </button>
       </div>
       
       <!-- Preview Section -->
@@ -312,20 +558,97 @@
           </div>
           
           <div class="button-group">
-            <button class="btn-primary" onclick="copySignature()">Copy Signature</button>
-            <button class="btn-secondary" onclick="copyHtmlCode()">Copy HTML Code</button>
+            <button class="btn-primary" onclick="copySignature()">
+              📋 Copy Signature
+            </button>
+            <button class="btn-secondary" onclick="downloadHtml()">
+              ⬇️ Download HTML
+            </button>
           </div>
           
-          <div class="success-message" id="successMessage">
-            ✓ Copied to clipboard!
-          </div>
+          <div class="message" id="messageBox"></div>
         </div>
         
         <div class="card code-section">
-          <h3>HTML Code</h3>
+          <div class="code-header">
+            <h3>HTML Code</h3>
+            <button class="code-copy-btn" onclick="copyHtmlCode()">Copy Code</button>
+          </div>
           <div class="code-box">
             <code id="htmlCode"></code>
           </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p>Built for <a href="https://spendrule.com" target="_blank" rel="noopener noreferrer">SpendRule</a> · <a href="https://github.com/spendrule/email-signature-generator" target="_blank" rel="noopener noreferrer">View on GitHub</a></p>
+    </div>
+  </div>
+  
+  <!-- Hosting Guide Modal -->
+  <div class="modal-overlay" id="hostingModal" onclick="closeHostingGuide(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2>📖 How to Host Your Images</h2>
+        <button class="modal-close" onclick="closeHostingGuide()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: 20px; color: #666;">Email clients (Gmail, Outlook) need images hosted online. Here are the easiest options:</p>
+        
+        <div class="hosting-option">
+          <h3>
+            Imgur
+            <span class="badge easy">Easiest</span>
+          </h3>
+          <p>Free, no account needed for basic uploads.</p>
+          <ol>
+            <li>Go to <a href="https://imgur.com/upload" target="_blank" rel="noopener noreferrer">imgur.com/upload</a></li>
+            <li>Drag & drop your image</li>
+            <li>Right-click the uploaded image → "Copy image address"</li>
+            <li>Paste the URL in the field above</li>
+          </ol>
+        </div>
+        
+        <div class="hosting-option">
+          <h3>
+            Cloudinary
+            <span class="badge recommended">Recommended</span>
+          </h3>
+          <p>Free tier with 25GB. Better for professional use with image optimization.</p>
+          <ol>
+            <li>Sign up at <a href="https://cloudinary.com" target="_blank" rel="noopener noreferrer">cloudinary.com</a> (free)</li>
+            <li>Go to Media Library → Upload</li>
+            <li>Click on uploaded image → Copy URL</li>
+            <li>Paste the URL in the field above</li>
+          </ol>
+        </div>
+        
+        <div class="hosting-option">
+          <h3>
+            Google Drive
+            <span class="badge easy">If you use Google Workspace</span>
+          </h3>
+          <p>Use your existing Google Drive storage.</p>
+          <ol>
+            <li>Upload image to Google Drive</li>
+            <li>Right-click → Share → "Anyone with link"</li>
+            <li>Copy link, extract the file ID (the long string after /d/)</li>
+            <li>Use format: <code style="font-size: 11px;">https://drive.google.com/uc?id=YOUR_FILE_ID</code></li>
+          </ol>
+        </div>
+        
+        <div class="hosting-option">
+          <h3>
+            Your Own Server / CDN
+            <span class="badge recommended">Best for teams</span>
+          </h3>
+          <p>If SpendRule has a CDN or asset server, upload there for reliability.</p>
+          <ol>
+            <li>Upload images to your company CDN or S3 bucket</li>
+            <li>Get the public URL</li>
+            <li>Paste the URL in the field above</li>
+          </ol>
         </div>
       </div>
     </div>
@@ -346,25 +669,70 @@
     
     const previewEl = document.getElementById('signaturePreview');
     const htmlCodeEl = document.getElementById('htmlCode');
-    const successMsg = document.getElementById('successMessage');
+    const messageBox = document.getElementById('messageBox');
+    
+    // Default placeholder images
+    const PLACEHOLDER_PHOTO = "https://via.placeholder.com/136x136/f0f0f0/999999?text=Photo";
+    const PLACEHOLDER_LOGO = "https://via.placeholder.com/128x26/ffffff/FF4F00?text=spendrule.";
+    
+    // Check if URL is valid
+    function isValidUrl(string) {
+      if (!string) return false;
+      try {
+        const url = new URL(string);
+        return url.protocol === 'http:' || url.protocol === 'https:';
+      } catch (_) {
+        return false;
+      }
+    }
+    
+    // Get the image source (hosted URL or placeholder)
+    function getPhotoSrc() {
+      const url = inputs.photoUrl.value.trim();
+      return isValidUrl(url) ? url : PLACEHOLDER_PHOTO;
+    }
+    
+    function getLogoSrc() {
+      const url = inputs.logoUrl.value.trim();
+      return isValidUrl(url) ? url : PLACEHOLDER_LOGO;
+    }
     
     // Generate HTML signature
     function generateSignatureHtml(data) {
-      const photoSrc = data.photoUrl || 'https://via.placeholder.com/136x136/f0f0f0/999999?text=Photo';
-      const logoSrc = data.logoUrl || 'https://via.placeholder.com/128x26/ffffff/000000?text=Logo';
+      const photoSrc = getPhotoSrc();
+      const logoSrc = getLogoSrc();
       const phoneClean = data.phone.replace(/[^+\d]/g, '');
+      
+      // Escape HTML entities
+      const escapeHtml = (str) => {
+        return str
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      };
+      
+      const name = escapeHtml(data.fullName);
+      const title = escapeHtml(data.jobTitle);
+      const email = escapeHtml(data.email);
+      const phone = escapeHtml(data.phone);
+      const website = escapeHtml(data.website);
+      const websiteUrl = escapeHtml(data.websiteUrl);
       
       return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Email Signature</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Email Signature - ${name}</title>
+<style type="text/css">a { text-decoration: none; }</style>
 </head>
 <body style="margin: 0; padding: 0;">
 <table cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, Helvetica, sans-serif; background-color: #FFFFFF;">
   <tr>
     <td>
       <table cellpadding="0" cellspacing="0" border="0">
+        <!-- Profile Photo -->
         <tr>
           <td style="padding-bottom: 16px;">
             <!--[if mso]>
@@ -374,53 +742,60 @@
             </v:roundrect>
             <![endif]-->
             <!--[if !mso]><!-->
-            <img src="${photoSrc}" alt="${data.fullName} - Profile Photo" width="68" height="68" style="display: block; width: 68px; height: 68px; border-radius: 12px; object-fit: cover; border: 0;" />
+            <img src="${photoSrc}" alt="${name} - Profile Photo" width="68" height="68" style="display: block; width: 68px; height: 68px; border-radius: 12px; object-fit: cover; border: 0;" />
             <!--<![endif]-->
           </td>
         </tr>
+        <!-- Content + Logo Row -->
         <tr>
           <td>
             <table cellpadding="0" cellspacing="0" border="0" width="100%">
               <tr>
+                <!-- Text Content -->
                 <td valign="bottom" style="vertical-align: bottom;">
+                  <!-- Name & Title -->
                   <table cellpadding="0" cellspacing="0" border="0">
                     <tr>
                       <td style="padding: 0; line-height: 1.2;">
-                        <span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; font-weight: normal; color: #000000; letter-spacing: -0.35px; display: block; margin: 0;">${data.fullName}</span>
+                        <span style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; font-weight: normal; color: #000000; letter-spacing: -0.35px; display: block; margin: 0;">${name}</span>
                       </td>
                     </tr>
                     <tr>
                       <td style="padding-top: 6px; line-height: 1.2;">
-                        <span style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: normal; color: #7F7F7F; letter-spacing: -0.26px; display: block; margin: 0;">${data.jobTitle}</span>
+                        <span style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: normal; color: #7F7F7F; letter-spacing: -0.26px; display: block; margin: 0;">${title}</span>
                       </td>
                     </tr>
                   </table>
+                  <!-- Spacer -->
                   <table cellpadding="0" cellspacing="0" border="0">
                     <tr>
                       <td height="13" style="height: 13px; font-size: 0; line-height: 0;">&nbsp;</td>
                     </tr>
                   </table>
+                  <!-- Contact Info -->
                   <table cellpadding="0" cellspacing="0" border="0">
                     <tr>
                       <td style="padding: 0; line-height: 1.2;">
-                        <a href="mailto:${data.email}" style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #7F7F7F; text-decoration: none; letter-spacing: -0.22px; display: block;">${data.email}</a>
+                        <a href="mailto:${email}" style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #7F7F7F; text-decoration: none; letter-spacing: -0.22px; display: block;">${email}</a>
                       </td>
                     </tr>
                     <tr>
                       <td style="padding-top: 4px; line-height: 1.2;">
-                        <a href="tel:${phoneClean}" style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #7F7F7F; text-decoration: none; letter-spacing: -0.22px; display: block;">${data.phone}</a>
+                        <a href="tel:${phoneClean}" style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #7F7F7F; text-decoration: none; letter-spacing: -0.22px; display: block;">${phone}</a>
                       </td>
                     </tr>
                     <tr>
                       <td style="padding-top: 4px; line-height: 1.2;">
-                        <a href="${data.websiteUrl}" target="_blank" rel="noopener noreferrer" style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #FF4F00; text-decoration: none; letter-spacing: -0.22px; display: block;">${data.website}</a>
+                        <a href="${websiteUrl}" target="_blank" rel="noopener noreferrer" style="font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #FF4F00; text-decoration: none; letter-spacing: -0.22px; display: block;">${website}</a>
                       </td>
                     </tr>
                   </table>
                 </td>
+                <!-- Spacer -->
                 <td width="16" style="width: 16px; font-size: 0; line-height: 0;">&nbsp;</td>
+                <!-- Logo -->
                 <td width="64" valign="bottom" style="vertical-align: bottom; width: 64px;">
-                  <a href="${data.websiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+                  <a href="${websiteUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
                     <img src="${logoSrc}" alt="SpendRule" width="64" height="13" style="display: block; width: 64px; height: 13px; border: 0;" />
                   </a>
                 </td>
@@ -438,14 +813,14 @@
     
     // Generate preview HTML (simplified for display)
     function generatePreviewHtml(data) {
-      const photoSrc = data.photoUrl || 'https://via.placeholder.com/136x136/f0f0f0/999999?text=Photo';
-      const logoSrc = data.logoUrl || 'https://via.placeholder.com/128x26/ffffff/FF4F00?text=spendrule.';
+      const photoSrc = getPhotoSrc();
+      const logoSrc = getLogoSrc();
       
       return `
         <table cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, sans-serif;">
           <tr>
             <td style="padding-bottom: 16px;">
-              <img src="${photoSrc}" class="sig-photo" alt="Profile" />
+              <img src="${photoSrc}" class="sig-photo" alt="Profile" onerror="this.src='${PLACEHOLDER_PHOTO}'" />
             </td>
           </tr>
           <tr>
@@ -463,7 +838,7 @@
                   </td>
                   <td width="16"></td>
                   <td valign="bottom">
-                    <img src="${logoSrc}" class="sig-logo" alt="Logo" />
+                    <img src="${logoSrc}" class="sig-logo" alt="Logo" onerror="this.src='${PLACEHOLDER_LOGO}'" />
                   </td>
                 </tr>
               </table>
@@ -476,14 +851,14 @@
     // Get current form data
     function getFormData() {
       return {
-        fullName: inputs.fullName.value,
-        jobTitle: inputs.jobTitle.value,
-        email: inputs.email.value,
-        phone: inputs.phone.value,
-        photoUrl: inputs.photoUrl.value,
-        logoUrl: inputs.logoUrl.value,
-        website: inputs.website.value,
-        websiteUrl: inputs.websiteUrl.value
+        fullName: inputs.fullName.value.trim(),
+        jobTitle: inputs.jobTitle.value.trim(),
+        email: inputs.email.value.trim(),
+        phone: inputs.phone.value.trim(),
+        photoUrl: inputs.photoUrl.value.trim(),
+        logoUrl: inputs.logoUrl.value.trim(),
+        website: inputs.website.value.trim(),
+        websiteUrl: inputs.websiteUrl.value.trim()
       };
     }
     
@@ -495,49 +870,106 @@
     }
     
     // Copy signature (rich text for email clients)
-    function copySignature() {
+    async function copySignature() {
       const data = getFormData();
       const html = generateSignatureHtml(data);
       
-      // Create a temporary element
-      const temp = document.createElement('div');
-      temp.innerHTML = html;
-      document.body.appendChild(temp);
-      
-      // Select and copy
-      const range = document.createRange();
-      range.selectNodeContents(temp);
-      const selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(range);
-      
-      // Copy as rich text
-      document.execCommand('copy');
-      
-      // Cleanup
-      selection.removeAllRanges();
-      document.body.removeChild(temp);
-      
-      showSuccess();
+      try {
+        const blob = new Blob([html], { type: 'text/html' });
+        const clipboardItem = new ClipboardItem({ 'text/html': blob });
+        await navigator.clipboard.write([clipboardItem]);
+        showMessage('success', '✓ Signature copied! Paste into your email client.');
+      } catch (err) {
+        // Fallback
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        temp.style.position = 'fixed';
+        temp.style.left = '-9999px';
+        document.body.appendChild(temp);
+        
+        const range = document.createRange();
+        range.selectNodeContents(temp);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        
+        document.execCommand('copy');
+        
+        selection.removeAllRanges();
+        document.body.removeChild(temp);
+        
+        showMessage('success', '✓ Signature copied! Paste into your email client.');
+      }
     }
     
     // Copy HTML code
-    function copyHtmlCode() {
+    async function copyHtmlCode() {
       const data = getFormData();
       const html = generateSignatureHtml(data);
       
-      navigator.clipboard.writeText(html).then(() => {
-        showSuccess();
-      });
+      try {
+        await navigator.clipboard.writeText(html);
+        showMessage('success', '✓ HTML code copied to clipboard!');
+      } catch (err) {
+        const textarea = document.createElement('textarea');
+        textarea.value = html;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showMessage('success', '✓ HTML code copied to clipboard!');
+      }
     }
     
-    // Show success message
-    function showSuccess() {
-      successMsg.classList.add('show');
-      setTimeout(() => {
-        successMsg.classList.remove('show');
-      }, 2000);
+    // Download HTML file
+    function downloadHtml() {
+      const data = getFormData();
+      const html = generateSignatureHtml(data);
+      const filename = `signature-${data.fullName.toLowerCase().replace(/\s+/g, '-')}.html`;
+      
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      showMessage('success', `✓ Downloaded ${filename}`);
     }
+    
+    // Show message
+    function showMessage(type, text) {
+      messageBox.textContent = text;
+      messageBox.className = `message ${type} show`;
+      
+      setTimeout(() => {
+        messageBox.classList.remove('show');
+      }, 3000);
+    }
+    
+    // Hosting guide modal
+    function showHostingGuide() {
+      document.getElementById('hostingModal').classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeHostingGuide(event) {
+      if (!event || event.target === document.getElementById('hostingModal')) {
+        document.getElementById('hostingModal').classList.remove('show');
+        document.body.style.overflow = '';
+      }
+    }
+    
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeHostingGuide();
+      }
+    });
     
     // Add event listeners to all inputs
     Object.values(inputs).forEach(input => {
